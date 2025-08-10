@@ -3605,28 +3605,182 @@ ig.module('game.menus.title').requires('game.menus.base', 'game.menus.detailed-s
             ig.game.setGame();
         },
     });
-    MenuItemOnlineVersion = MenuItem.extend({
+    MenuItemAboutVarun = MenuItem.extend({
         getText: function() {
-            return 'online version';
+            return 'about varun';
         },
         ok: function() {
-            window.location.href='http://zty.pe/';
+            // Create and show the about Varun modal
+            this.showAboutVarunModal();
         },
-    });
-    MenuItemAboutTrainer = MenuItem.extend({
-        getText: function() {
-            return 'about trainer';
-        },
-        ok: function() {
-            window.location.href='https://github.com/KevinWang15/ztype-trainer';
-        },
+        showAboutVarunModal: function() {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('aboutVarunModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Create modal container
+            const modal = document.createElement('div');
+            modal.id = 'aboutVarunModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                backdrop-filter: blur(5px);
+            `;
+
+            // Create modal content
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: linear-gradient(135deg, #0a0000 0%, #1a0000 50%, #2d0000 100%);
+                border: 3px solid #ff0000;
+                border-radius: 15px;
+                padding: 40px;
+                max-width: 600px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+                position: relative;
+                animation: modalSlideIn 0.5s ease-out;
+            `;
+
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes modalSlideIn {
+                    from {
+                        opacity: 0;
+                        transform: scale(0.8) translateY(-50px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: scale(1) translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Modal content HTML
+            modalContent.innerHTML = `
+                <h2 style="
+                    font-family: 'Orbitron', monospace;
+                    font-size: 2.5rem;
+                    font-weight: 900;
+                    background: linear-gradient(45deg, #ff0000, #8b0000, #ff4500);
+                    background-size: 200% 200%;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    margin-bottom: 30px;
+                    animation: titleGlow 3s ease-in-out infinite;
+                ">About Varun</h2>
+                
+                <div style="
+                    font-family: 'Rajdhani', sans-serif;
+                    font-size: 1.2rem;
+                    line-height: 1.8;
+                    color: #ff4500;
+                    text-align: left;
+                    margin-bottom: 30px;
+                ">
+                    <p style="margin-bottom: 20px;">
+                        <strong>Hey, I'm Varun!</strong> 👋
+                    </p>
+                    
+                    <p style="margin-bottom: 20px;">
+                        I'm a <strong>2nd year CSE student</strong> from <strong>Gokulakrishna College of Engineering</strong>.
+                    </p>
+                    
+                    <p style="margin-bottom: 20px;">
+                        <strong>Tech Stack Used:</strong><br>
+                        • <strong>HTML5</strong> - Game structure and canvas rendering<br>
+                        • <strong>CSS3</strong> - Modern UI with animations and responsive design<br>
+                        • <strong>JavaScript (ES6+)</strong> - Game logic and dynamic features<br>
+                        • <strong>Web Audio API</strong> - Procedural sound generation<br>
+                        • <strong>HTML5 Canvas</strong> - Dynamic backgrounds and particle effects<br>
+                        • <strong>ImpactJS Game Engine</strong> - Core game mechanics
+                    </p>
+                    
+                    <p style="margin-bottom: 20px;">
+                        <strong>Key Features:</strong><br>
+                        • Combat brutal cyberpunk theme with space background<br>
+                        • Dynamic star field and asteroid animations<br>
+                        • Procedural sound effects using Web Audio API<br>
+                        • Enhanced trainer system with keyboard shortcuts<br>
+                        • Particle system for visual effects<br>
+                        • Responsive design for multiple screen sizes
+                    </p>
+                    
+                    <p style="margin-bottom: 20px;">
+                        <strong>Project Goals:</strong><br>
+                        • Learning game development with modern web technologies<br>
+                        • Exploring procedural generation techniques<br>
+                        • Understanding audio-visual integration in games<br>
+                        • Building responsive and accessible gaming experiences
+                    </p>
+                </div>
+                
+                <button id="closeModal" style="
+                    background: linear-gradient(45deg, #ff0000, #8b0000);
+                    border: 2px solid #ff4500;
+                    color: white;
+                    padding: 15px 30px;
+                    font-family: 'Orbitron', monospace;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 20px rgba(255, 0, 0, 0.6)'" 
+                   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                    Close
+                </button>
+            `;
+
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            // Close modal functionality
+            const closeBtn = document.getElementById('closeModal');
+            closeBtn.addEventListener('click', function() {
+                modal.remove();
+                style.remove();
+            });
+
+            // Close on outside click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                    style.remove();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', function closeOnEscape(e) {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    style.remove();
+                    document.removeEventListener('keydown', closeOnEscape);
+                }
+            });
+        }
     });
     MenuTitle = Menu.extend({
         itemClasses: [],
         scale: 0.75,
         y: 0,
         init: function() {
-            this.itemClasses = [MenuItemNormalMode,MenuItemOnlineVersion,MenuItemAboutTrainer];
+            this.itemClasses = [MenuItemNormalMode,MenuItemAboutVarun];
             
             this.parent();
             this.items[0].y = 740;
@@ -5720,7 +5874,6 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.menus.about'
             }]
         }
     };
-    var canvas = document.getElementById('ztype-game-canvas');
     var width = 480;
     var height = 720;
     if (ig.ua.mobile) {
@@ -5728,12 +5881,6 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.menus.about'
         ig.$('#ztype-byline').style.display = 'none';
         var resize = function() {
             height = Math.min((window.innerHeight / (window.innerWidth)) * width, 852);
-            canvas.style.position = 'absolute';
-            canvas.style.display = 'block';
-            canvas.style.width = window.innerWidth + 'px';
-            canvas.style.height = (window.innerWidth / width) * height + 'px';
-            canvas.style.bottom = 'auto';
-            canvas.style.right = 'auto';
             if (ig.game && ig.system) {
                 ig.system.resize(width, height);
             }

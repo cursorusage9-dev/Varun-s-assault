@@ -1,342 +1,366 @@
 /**
  * ===================================
- * Copyright KevinWang
- * Trainer for ZType v1.24
+ * Varun's Assault - About Developer
  * ===================================
  *
- * https://github.com/KevinWang15/ztype-trainer
+ * About section for Varun's Assault game
  */
 
 (function () {
+    'use strict';
 
-    function loadScript(url, callback) {
-
-        var script = document.createElement("script")
-        script.type = "text/javascript";
-
-        if (script.readyState) {
-            script.onreadystatechange = function () {
-                if (script.readyState == "loaded" || script.readyState == "complete") {
-                    script.onreadystatechange = null;
-                    callback();
-                }
-            };
-        } else {
-            script.onload = function () {
-                callback();
-            };
+    // About Varun UI Manager
+    class AboutVarunUI {
+        constructor() {
+            this.isVisible = false;
+            this.init();
         }
 
-        script.src = url;
-        document.getElementsByTagName("head")[0].appendChild(script);
+        init() {
+            this.createAboutTab();
+            this.bindEvents();
+        }
+
+        createAboutTab() {
+            // Create about tab button
+            const aboutButton = document.createElement('div');
+            aboutButton.id = 'about-varun-tab';
+            aboutButton.className = 'about-tab-button';
+            aboutButton.innerHTML = '👨‍💻 About Developer';
+            aboutButton.title = 'Click to learn about the developer';
+            
+            // Create about panel
+            const aboutPanel = document.createElement('div');
+            aboutPanel.id = 'about-varun-panel';
+            aboutPanel.className = 'about-panel hidden';
+            aboutPanel.innerHTML = `
+                <div class="about-content">
+                    <div class="about-header">
+                        <h2>👨‍💻 Hey, I'm Varun!</h2>
+                        <button class="close-about" id="closeAbout">×</button>
+                    </div>
+                    <div class="about-body">
+                        <div class="developer-info">
+                            <p><strong>🎓 Student:</strong> 2nd Year CSE Student</p>
+                            <p><strong>🏫 College:</strong> Gokulakrishna College of Engineering</p>
+                            <p><strong>🎮 Project:</strong> Varun's Assault - Neural Network Defense</p>
+                        </div>
+                        
+                        <div class="tech-stack">
+                            <h3>🛠️ Tech Stack Used:</h3>
+                            <ul>
+                                <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (ES6+)</li>
+                                <li><strong>Game Engine:</strong> Impact.js (Modified)</li>
+                                <li><strong>Audio:</strong> Web Audio API for Procedural Sound Generation</li>
+                                <li><strong>Graphics:</strong> HTML5 Canvas for Dynamic Backgrounds</li>
+                                <li><strong>Effects:</strong> Custom Particle System</li>
+                                <li><strong>Styling:</strong> Modern CSS with Animations & Gradients</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="project-features">
+                            <h3>🚀 Project Highlights:</h3>
+                            <ul>
+                                <li>🎯 <strong>Combat Brutal Theme:</strong> Blood-splitting visual effects with focused gameplay</li>
+                                <li>🌌 <strong>Dynamic Space Background:</strong> Animated stars and asteroids</li>
+                                <li>🔊 <strong>Procedural Audio:</strong> Cyberpunk-style sound effects generated in real-time</li>
+                                <li>🎨 <strong>Modern UI:</strong> Responsive design with smooth animations</li>
+                                <li>⚡ <strong>Performance Optimized:</strong> Efficient rendering and memory management</li>
+                                <li>🎮 <strong>Enhanced Gameplay:</strong> Multiple difficulty modes and power-ups</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="developer-notes">
+                            <h3>💡 Developer Notes:</h3>
+                            <p>This project was developed as a learning experience in modern web game development. 
+                            It combines various web technologies to create an immersive gaming experience with 
+                            procedural content generation and modern UI/UX principles.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add styles
+            const styles = document.createElement('style');
+            styles.textContent = `
+                .about-tab-button {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #ff0000, #8b0000);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 25px;
+                    cursor: pointer;
+                    font-family: 'Orbitron', monospace;
+                    font-weight: 600;
+                    font-size: 14px;
+                    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+                    transition: all 0.3s ease;
+                    z-index: 10000;
+                    border: 2px solid #ff4500;
+                }
+                
+                .about-tab-button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+                    background: linear-gradient(45deg, #ff4500, #ff0000);
+                }
+                
+                .about-panel {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.9);
+                    backdrop-filter: blur(10px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10001;
+                    opacity: 1;
+                    transition: opacity 0.3s ease;
+                }
+                
+                .about-panel.hidden {
+                    opacity: 0;
+                    pointer-events: none;
+                }
+                
+                .about-content {
+                    background: linear-gradient(135deg, #0a0000 0%, #1a0000 50%, #2d0000 100%);
+                    border: 3px solid #ff0000;
+                    border-radius: 15px;
+                    padding: 30px;
+                    max-width: 800px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+                    position: relative;
+                }
+                
+                .about-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 25px;
+                    padding-bottom: 15px;
+                    border-bottom: 2px solid #ff4500;
+                }
+                
+                .about-header h2 {
+                    font-family: 'Orbitron', monospace;
+                    color: #ff4500;
+                    margin: 0;
+                    font-size: 2rem;
+                    text-shadow: 0 0 10px #ff4500;
+                }
+                
+                .close-about {
+                    background: #ff0000;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    font-size: 24px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .close-about:hover {
+                    background: #ff4500;
+                    transform: scale(1.1);
+                }
+                
+                .about-body {
+                    color: #fff;
+                    font-family: 'Rajdhani', sans-serif;
+                    line-height: 1.6;
+                }
+                
+                .developer-info, .tech-stack, .project-features, .developer-notes {
+                    margin-bottom: 25px;
+                }
+                
+                .developer-info p {
+                    font-size: 1.1rem;
+                    margin-bottom: 8px;
+                }
+                
+                .tech-stack h3, .project-features h3, .developer-notes h3 {
+                    color: #ff4500;
+                    font-family: 'Orbitron', monospace;
+                    margin-bottom: 15px;
+                    font-size: 1.3rem;
+                }
+                
+                .tech-stack ul, .project-features ul {
+                    list-style: none;
+                    padding-left: 0;
+                }
+                
+                .tech-stack li, .project-features li {
+                    padding: 8px 0;
+                    border-left: 3px solid #ff4500;
+                    padding-left: 15px;
+                    margin-bottom: 5px;
+                    background: rgba(255, 69, 0, 0.1);
+                    border-radius: 0 5px 5px 0;
+                }
+                
+                .developer-notes p {
+                    font-style: italic;
+                    color: #ccc;
+                    background: rgba(255, 0, 0, 0.1);
+                    padding: 15px;
+                    border-radius: 8px;
+                    border-left: 4px solid #ff0000;
+                }
+                
+                @media (max-width: 768px) {
+                    .about-content {
+                        margin: 20px;
+                        padding: 20px;
+                        max-width: 95vw;
+                        max-height: 85vh;
+                    }
+                    
+                    .about-header h2 {
+                        font-size: 1.5rem;
+                    }
+                    
+                    .about-tab-button {
+                        top: 10px;
+                        right: 10px;
+                        padding: 10px 15px;
+                        font-size: 12px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .about-content {
+                        margin: 10px;
+                        padding: 15px;
+                        max-width: 98vw;
+                        max-height: 90vh;
+                    }
+                    
+                    .about-header h2 {
+                        font-size: 1.3rem;
+                    }
+                    
+                    .about-body {
+                        font-size: 0.9rem;
+                        line-height: 1.4;
+                    }
+                    
+                    .tech-stack h3, .project-features h3, .developer-notes h3 {
+                        font-size: 1.1rem;
+                    }
+                    
+                    .tech-stack li, .project-features li {
+                        padding: 6px 0;
+                        padding-left: 12px;
+                        font-size: 0.85rem;
+                    }
+                }
+
+                @media (max-width: 320px) {
+                    .about-content {
+                        margin: 5px;
+                        padding: 12px;
+                        max-width: 99vw;
+                        max-height: 95vh;
+                    }
+                    
+                    .about-header h2 {
+                        font-size: 1.1rem;
+                    }
+                    
+                    .about-body {
+                        font-size: 0.8rem;
+                        line-height: 1.3;
+                    }
+                    
+                    .tech-stack h3, .project-features h3, .developer-notes h3 {
+                        font-size: 1rem;
+                    }
+                    
+                    .tech-stack li, .project-features li {
+                        padding: 5px 0;
+                        padding-left: 10px;
+                        font-size: 0.8rem;
+                    }
+                }
+            `;
+            
+            document.head.appendChild(styles);
+            document.body.appendChild(aboutButton);
+            document.body.appendChild(aboutPanel);
+        }
+
+        bindEvents() {
+            // Toggle about panel
+            document.getElementById('about-varun-tab').addEventListener('click', () => {
+                this.toggleAbout();
+            });
+            
+            // Close about panel
+            document.getElementById('closeAbout').addEventListener('click', () => {
+                this.hideAbout();
+            });
+            
+            // Close on background click
+            document.getElementById('about-varun-panel').addEventListener('click', (e) => {
+                if (e.target.id === 'about-varun-panel') {
+                    this.hideAbout();
+                }
+            });
+            
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.isVisible) {
+                    this.hideAbout();
+                }
+            });
+        }
+
+        toggleAbout() {
+            if (this.isVisible) {
+                this.hideAbout();
+            } else {
+                this.showAbout();
+            }
+        }
+
+        showAbout() {
+            document.getElementById('about-varun-panel').classList.remove('hidden');
+            this.isVisible = true;
+        }
+
+        hideAbout() {
+            document.getElementById('about-varun-panel').classList.add('hidden');
+            this.isVisible = false;
+        }
     }
 
-    loadScript("https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js", function () {
-
-        if (!!window.trainer)
-            window.trainer.deactivateAll();
-
-        if (ig.version != '1.24')
-            alert("This trainer is designed to work with ZType 1.24, current version is " + ig.version + ", there may be compatibility issues");
-
-
-        var $ = jQuery;
-
-        $("body").prepend("<div id='trailer-info' style='text-align:center;padding:10px'>Trainer Activated. made by KevinWang, <a href='https://github.com/KevinWang15/ztype-trainer'>visit GitHub Page</a></div>")
-
-
-        var intervals = {};
-
-
-        var cheats = {
-            instantKill: function () {
-                ig.game.entities.forEach(function (entity) {
-                    if (!!entity.remainingWord && entity.health < entity.word.length)
-                        entity.receiveDamage(100);
-
-                    if (!!entity.remainingWord && ig.game.currentTarget == entity && !!entity.remainingWord != entity.word)
-                        ig.game.currentTarget = null;
-                });
-            },
-
-            godMode: function () {
-                cheats.machineGun();
-                var allKilled = true;
-                for (var i = 0; i < ig.game.entities.length; i++) {
-                    if (!ig.game.entities[i].word)
-                        continue;
-                    if (!ig.game.entities[i].killed) {
-                        allKilled = false;
-                        break;
-                    }
-                }
-                if (allKilled) return;
-                ig.game.player.spawnEMP();
-                ig.game.emps = 100000;
-                ig.game.screenShake(80);
-            },
-
-            machineGun: function () {
-                if ((!ig.game.currentTarget || !ig.game.currentTarget.remainingWord) && !!ig.game.entities && ig.game.entities.length > 0) {
-                    var maxYIndex = 0, maxY = -1000;
-                    for (var i = 0; i < ig.game.entities.length; i++) {
-                        if (!ig.game.entities[i].remainingWord || !ig.game.entities[i].pos) continue;
-                        if (ig.game.entities[i].pos.y > maxY) {
-                            maxY = ig.game.entities[i].pos.y;
-                            maxYIndex = i;
-                        }
-                    }
-                    ig.game.currentTarget = ig.game.entities[maxYIndex];
-                    if (!!ig.game.currentTarget && !!ig.game.currentTarget.target)
-                        ig.game.currentTarget.target();
-                }
-                if (!!ig.game.currentTarget && !!ig.game.currentTarget.remainingWord)
-                    ig.game.shoot(ig.game.currentTarget.remainingWord[0]);
-            }
-        };
-
-        function cheatOn(name, interval) {
-            cheatOff(name);
-            // console.log(name, 'on', interval);
-            intervals[name] = setInterval(cheats[name], interval);
-        };
-
-        function cheatOff(name) {
-            // console.log(name, 'off');
-            if (!!intervals[name])
-                clearInterval(intervals[name]);
-            intervals[name] = null;
-        };
-
-
-        var originalFuncs = {};
-        var machineGunState = 0;
-
-
-        $(document).bind('keydown', function (e) {
-            if (!e.altKey) return;
-
-            if (e.keyCode == 49)
-                window.trainer.toggleMachineGun();
-
-            if (e.keyCode == 50) {
-                if (!originalFuncs['shoot'])
-                    window.trainer.manualMachineGun();
-                else
-                    window.trainer.manualMachineGunOff();
-            }
-
-            if (e.keyCode == 51)
-                window.trainer.toggleInstantKill();
-
-            if (e.keyCode == 52)
-                window.trainer.unlimitedEmp();
-
-            if (e.keyCode == 53)
-                window.trainer.toggleGodMode();
-
-            if (e.keyCode == 54)
-                window.trainer.shotgun();
-
-            if (e.keyCode == 55)
-                window.trainer.aLotOfEnemies();
-
-            if (e.keyCode == 56)
-                window.trainer.aLotOfFastEnemies();
-
-            if (e.keyCode == 57)
-                window.trainer.deactivateAll();
-
-            if (e.keyCode == 48)
-                window.trainer.noScreenShake();
-
-            if (e.keyCode == 189) {
-                $("#ztype-gsense-ins").hide();
-                $("#trailer-info").hide();
-                $("#ztype-byline").hide();
-            }
-        });
-
-        trainer = {
-            manualMachineGun: function () {
-                patchShoot();
-                $(document).bind('keydown', cheats.machineGun);
-
-            },
-
-            manualMachineGunOff: function () {
-                $(document).unbind('keydown', cheats.machineGun);
-                if (!!originalFuncs['shoot']) {
-                    ig.game.shoot = originalFuncs['shoot'];
-                    originalFuncs['shoot'] = null;
-                    ig.game.currentTarget = null;
-                }
-            },
-
-            deactivateAll: function () {
-                for (var cheat in cheats)
-                    cheatOff(cheat);
-
-                window.trainer.manualMachineGunOff();
-            },
-
-            noScreenShake: function () {
-                if (!originalFuncs['screenShake']) {
-                    originalFuncs['screenShake'] = ig.game.screenShake;
-                    ig.game.screenShake = function (strength) {
-                    }
-                } else {
-                    ig.game.screenShake = originalFuncs['screenShake'];
-                    originalFuncs['screenShake'] = null;
-                }
-            },
-
-            unlimitedEmp: function () {
-                ig.game.emps = 100000;
-            },
-
-            aLotOfEnemies: function () {
-                ig.game.wave.types[0].count = 10;
-                ig.game.wave.types[1].count = 30;
-                ig.game.wave.types[2].count = 50;
-                ig.game.nextWave();
-                ig.game.wave.spawnWait = ig.game.wave.currentSpawnWait = 0.2;
-            },
-
-            aLotOfFastEnemies: function () {
-                ig.game.speedFactor = 4;
-                window.trainer.aLotOfEnemies();
-            },
-
-            killAll: function () {
-                ig.game.entities.forEach(function (entity) {
-                    if (!entity.remainingWord) return;
-                    entity.receiveDamage(100);
-                    entity.spawnExplosionParticles(true);
-                });
-            },
-
-            instantKill: function () {
-                cheatOn('instantKill', 100);
-            },
-
-            instantKillOff: function () {
-                cheatOff('instantKill');
-            },
-
-            toggleInstantKill: function () {
-                if (!!intervals['instantKill'])
-                    window.trainer.instantKillOff();
-                else
-                    window.trainer.instantKill();
-            },
-
-            godMode: function () {
-                cheatOn('godMode', 26);
-            },
-
-            godModeOff: function () {
-                cheatOff('godMode');
-            },
-
-            toggleGodMode: function () {
-                if (!!intervals['godMode'])
-                    window.trainer.godModeOff();
-                else
-                    window.trainer.godMode();
-            },
-
-            machineGun: function () {
-                cheatOn('machineGun', 120);
-                machineGunState = 1;
-            },
-
-            machineGunFast: function () {
-                cheatOn('machineGun', 22);
-                machineGunState = 2;
-            },
-
-            machineGunOff: function () {
-                cheatOff('machineGun');
-                ig.game.currentTarget = null;
-                machineGunState = 0;
-            },
-
-            toggleMachineGun: function () {
-                switch (machineGunState) {
-                    case 0:
-                        window.trainer.machineGun();
-                        break;
-                    case 1:
-                        window.trainer.machineGunFast();
-                        break;
-                    case 2:
-                        window.trainer.machineGunOff();
-                        break;
-                }
-            },
-
-            shotgun: function () {
-                ig.game.entities.forEach(function (entity) {
-                    if (!entity.remainingWord) return;
-                    for (var j = 0; j < entity.remainingWord.length; j++)
-                        ig.game.player.shoot(entity);
-                });
-            }
-
-        };
-
-
-        function patchShoot() {
-            if (!!originalFuncs['shoot'])
-                return;
-
-            originalFuncs['shoot'] = ig.game.shoot;
-
-            ig.game.shoot = function (letter) {
-                this.idleTimer.reset();
-                if (!this.currentTarget) {
-                    var potentialTargets = this.targets[letter];
-                    var nearestDistance = -1;
-                    var nearestTarget = null;
-                    for (var i = 0; i < potentialTargets.length; i++) {
-                        var distance = this.player.distanceTo(potentialTargets[i]);
-                        if (distance < nearestDistance || !nearestTarget) {
-                            nearestDistance = distance;
-                            nearestTarget = potentialTargets[i];
-                        }
-                    }
-                    if (nearestTarget) {
-                        nearestTarget.target();
-                    }
-                }
-                if (this.currentTarget) {
-                    var target = this.currentTarget;
-                    var hit = this.currentTarget.isHitBy(letter);
-                    if (hit) {
-                        this.player.shoot(target);
-                        this.score += this.multiplier;
-                        this.hits++;
-                        this.streak++;
-                        this.longestStreak = Math.max(this.streak, this.longestStreak);
-                        if (ZType.MULTIPLIER_TIERS[this.streak]) {
-                            this.multiplier = ZType.MULTIPLIER_TIERS[this.streak];
-                            this.keyboard.showMultiplier(this.multiplier);
-                        }
-                        if (target.dead) {
-                            this.kills++;
-                            this.setExpectedKeys();
-                        }
-                        else {
-                            var translated = this.translateUmlaut(target.remainingWord.charAt(0).toLowerCase());
-                            if (this.keyboard) {
-                                this.keyboard.expectedKeys = [translated];
-                            }
-                        }
-                    }
-                }
-            }.bind(ig.game);
+    // Initialize when DOM is ready
+    function initializeAbout() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.aboutVarun = new AboutVarunUI();
+                console.log('👨‍💻 About Varun UI initialized');
+            });
+        } else {
+            window.aboutVarun = new AboutVarunUI();
+            console.log('👨‍💻 About Varun UI initialized');
         }
-    });
+    }
+
+    // Start initialization
+    initializeAbout();
+
 })();
 
