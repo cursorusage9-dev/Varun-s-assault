@@ -34,6 +34,7 @@
   "render": {
     "type": "static",
     "buildCommand": "echo 'Static site - no build required'",
+    "publishDir": "./",
     "startCommand": "python -m http.server 8000",
     "envVars": []
   }

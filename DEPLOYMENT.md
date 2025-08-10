@@ -11,7 +11,7 @@
 ### Step 2: Configure Deployment
 - **Name:** `varuns-assault`
 - **Build Command:** `echo "Static site - no build required"`
-- **Publish Directory:** Leave empty (root directory)
+- **Publish Directory:** `./` (or leave empty for root directory)
 - **Environment:** Static Site
 
 ### Step 3: Deploy
@@ -26,7 +26,7 @@ If you prefer manual setup:
 ### Build Settings
 ```yaml
 Build Command: echo "Static site - no build required"
-Publish Directory: (leave empty)
+Publish Directory: ./
 ```
 
 ### Environment Variables
