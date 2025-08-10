@@ -217,6 +217,8 @@
                 inset 0 0 30px rgba(255, 0, 0, 0.15);
             background: rgba(10, 0, 0, 0.95);
             z-index: 1000002;
+            outline: none;
+            cursor: text;
         }
 
 
@@ -319,11 +321,20 @@
 
             .game-canvas-container {
                 top: 60px;
+                width: 100%;
+                height: calc(100vh - 60px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             #varuns-assault-canvas {
                 border-width: 2px;
                 border-radius: 8px;
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
             }
 
             .about-tab-button {
@@ -375,11 +386,20 @@
 
             .game-canvas-container {
                 top: 50px;
+                width: 100%;
+                height: calc(100vh - 50px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             #varuns-assault-canvas {
                 border-width: 1px;
                 border-radius: 6px;
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
             }
 
             .about-tab-button {
@@ -431,6 +451,18 @@
 
             .game-canvas-container {
                 top: 45px;
+                width: 100%;
+                height: calc(100vh - 45px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #varuns-assault-canvas {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
             }
 
             .about-tab-button {
@@ -452,6 +484,20 @@
             .close-about {
                 min-height: 44px;
                 min-width: 44px;
+            }
+            
+            /* Ensure canvas is properly sized on mobile */
+            #varuns-assault-canvas {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100vw !important;
+                max-height: calc(100vh - 60px) !important;
+            }
+            
+            .game-canvas-container {
+                width: 100vw !important;
+                height: calc(100vh - 60px) !important;
+                overflow: hidden;
             }
         }
 
@@ -476,6 +522,18 @@
 
             .game-canvas-container {
                 top: 40px;
+                width: 100%;
+                height: calc(100vh - 40px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #varuns-assault-canvas {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
             }
 
             .loading-title {
@@ -520,7 +578,9 @@
         </header>
 
         <div class="game-canvas-container">
-            <canvas id="varuns-assault-canvas"></canvas>
+            <canvas id="varuns-assault-canvas" tabindex="1"></canvas>
+            <!-- Hidden input to trigger mobile keyboard -->
+            <input type="text" id="mobile-keyboard-trigger" style="position: absolute; opacity: 0; pointer-events: none; z-index: -1;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
 
     </div>
@@ -657,6 +717,11 @@
                 
                 setTimeout(function() {
                     loadingScreen.classList.add('hidden');
+                    
+                    // Trigger mobile keyboard after loading
+                    setTimeout(function() {
+                        triggerMobileKeyboard();
+                    }, 500);
                 }, 1000);
             }, 3000);
             
@@ -669,6 +734,67 @@
                     document.getElementById('lives').textContent = stats.lives || 3;
                 }
             }, 100);
+        });
+
+        // Mobile keyboard trigger function
+        function triggerMobileKeyboard() {
+            const canvas = document.getElementById('varuns-assault-canvas');
+            const keyboardTrigger = document.getElementById('mobile-keyboard-trigger');
+            
+            // Check if it's a mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Focus the canvas first
+                canvas.focus();
+                
+                // Then focus the hidden input to trigger keyboard
+                setTimeout(function() {
+                    keyboardTrigger.focus();
+                    keyboardTrigger.click();
+                }, 100);
+                
+                // Add touch event to canvas to refocus
+                canvas.addEventListener('touchstart', function() {
+                    canvas.focus();
+                    keyboardTrigger.focus();
+                }, { passive: true });
+                
+                // Add click event to canvas
+                canvas.addEventListener('click', function() {
+                    canvas.focus();
+                    keyboardTrigger.focus();
+                });
+            }
+        }
+
+        // Handle canvas focus for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('varuns-assault-canvas');
+            const keyboardTrigger = document.getElementById('mobile-keyboard-trigger');
+            
+            // Ensure canvas is focusable
+            canvas.setAttribute('tabindex', '1');
+            
+            // Handle keyboard input on mobile
+            keyboardTrigger.addEventListener('input', function(e) {
+                // Prevent default behavior
+                e.preventDefault();
+                
+                // Focus back to canvas
+                canvas.focus();
+                
+                // Clear the input
+                this.value = '';
+            });
+            
+            // Handle canvas focus
+            canvas.addEventListener('focus', function() {
+                // Trigger keyboard on mobile
+                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    keyboardTrigger.focus();
+                }
+            });
         });
     </script>
 </body>
