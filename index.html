@@ -492,12 +492,20 @@
                 height: 100% !important;
                 max-width: 100vw !important;
                 max-height: calc(100vh - 60px) !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
             
             .game-canvas-container {
                 width: 100vw !important;
                 height: calc(100vh - 60px) !important;
                 overflow: hidden;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
         }
 
@@ -581,6 +589,8 @@
             <canvas id="varuns-assault-canvas" tabindex="1"></canvas>
             <!-- Hidden input to trigger mobile keyboard -->
             <input type="text" id="mobile-keyboard-trigger" style="position: absolute; opacity: 0; pointer-events: none; z-index: -1;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <!-- Mobile debug indicator -->
+            <div id="mobile-debug" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 0, 0, 0.8); color: white; padding: 5px; font-size: 12px; border-radius: 3px; z-index: 10000; display: none;">Mobile Debug</div>
         </div>
 
     </div>
@@ -740,11 +750,29 @@
         function triggerMobileKeyboard() {
             const canvas = document.getElementById('varuns-assault-canvas');
             const keyboardTrigger = document.getElementById('mobile-keyboard-trigger');
+            const container = document.querySelector('.game-canvas-container');
             
             // Check if it's a mobile device
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
+                console.log('📱 Mobile device detected, initializing mobile features...');
+                
+                // Ensure canvas is visible
+                canvas.style.display = 'block';
+                canvas.style.visibility = 'visible';
+                canvas.style.opacity = '1';
+                container.style.display = 'flex';
+                container.style.visibility = 'visible';
+                container.style.opacity = '1';
+                
+                // Set canvas size for mobile
+                const containerRect = container.getBoundingClientRect();
+                canvas.style.width = containerRect.width + 'px';
+                canvas.style.height = containerRect.height + 'px';
+                
+                console.log('🎮 Canvas size set to:', containerRect.width + 'x' + containerRect.height);
+                
                 // Focus the canvas first
                 canvas.focus();
                 
@@ -765,6 +793,8 @@
                     canvas.focus();
                     keyboardTrigger.focus();
                 });
+                
+                console.log('✅ Mobile features initialized');
             }
         }
 
@@ -772,9 +802,45 @@
         document.addEventListener('DOMContentLoaded', function() {
             const canvas = document.getElementById('varuns-assault-canvas');
             const keyboardTrigger = document.getElementById('mobile-keyboard-trigger');
+            const container = document.querySelector('.game-canvas-container');
             
             // Ensure canvas is focusable
             canvas.setAttribute('tabindex', '1');
+            
+            // Mobile-specific canvas setup
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                console.log('📱 Setting up mobile canvas...');
+                
+                // Show debug indicator
+                const debugIndicator = document.getElementById('mobile-debug');
+                if (debugIndicator) {
+                    debugIndicator.style.display = 'block';
+                    debugIndicator.textContent = 'Mobile: Canvas Setup';
+                }
+                
+                // Force canvas visibility
+                canvas.style.display = 'block';
+                canvas.style.visibility = 'visible';
+                canvas.style.opacity = '1';
+                container.style.display = 'flex';
+                container.style.visibility = 'visible';
+                container.style.opacity = '1';
+                
+                // Set initial size
+                setTimeout(() => {
+                    const containerRect = container.getBoundingClientRect();
+                    if (containerRect.width > 0 && containerRect.height > 0) {
+                        canvas.style.width = containerRect.width + 'px';
+                        canvas.style.height = containerRect.height + 'px';
+                        console.log('🎮 Mobile canvas size:', containerRect.width + 'x' + containerRect.height);
+                        
+                        if (debugIndicator) {
+                            debugIndicator.textContent = `Mobile: ${containerRect.width}x${containerRect.height}`;
+                        }
+                    }
+                }, 100);
+            }
             
             // Handle keyboard input on mobile
             keyboardTrigger.addEventListener('input', function(e) {
@@ -791,7 +857,7 @@
             // Handle canvas focus
             canvas.addEventListener('focus', function() {
                 // Trigger keyboard on mobile
-                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                if (isMobile) {
                     keyboardTrigger.focus();
                 }
             });
