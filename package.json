@@ -1,0 +1,40 @@
+{
+  "name": "varuns-assault",
+  "version": "2.0.0",
+  "description": "Varun's Assault - Neural Network Defense Game",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'Static site - no build required'",
+    "deploy": "echo 'Deploying to Render...'"
+  },
+  "keywords": [
+    "game",
+    "typing",
+    "space-shooter",
+    "neural-network",
+    "varun-assault",
+    "web-game",
+    "html5",
+    "javascript"
+  ],
+  "author": "Varun - 2nd Year CSE Student, Gokulakrishna College of Engineering",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cursorusage9-dev/Varun-s-assault.git"
+  },
+  "homepage": "https://varuns-assault.onrender.com",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "render": {
+    "type": "static",
+    "buildCommand": "echo 'Static site - no build required'",
+    "startCommand": "python -m http.server 8000",
+    "envVars": []
+  }
+}

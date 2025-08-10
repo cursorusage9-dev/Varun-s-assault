@@ -5908,5 +5908,5 @@ ig.module('game.main').requires('impact.game', 'impact.font', 'game.menus.about'
             });
         }
     }
-    ig.main('#ztype-game-canvas', ZType, 60, width, height, 1, ig.RiseLoader);
+    ig.main('#varuns-assault-canvas', ZType, 60, width, height, 1, ig.RiseLoader);
 });
